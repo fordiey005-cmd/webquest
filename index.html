@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yaman ng Asya — WebQuest</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #064e3b;
+    --green-mid: #059669;
+    --green-light: #d1fae5;
+    --green-pale: #ecfdf5;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --coral: #ef4444;
+    --coral-light: #fee2e2;
+    --ink: #1a1a2e;
+    --ink-soft: #374151;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --white: #ffffff;
+    --surface: #f9fafb;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: #f0fdf4;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* decorative top stripe */
+  body::before {
+    content: '';
+    display: block;
+    height: 6px;
+    background: linear-gradient(90deg, #064e3b, #059669, #f59e0b, #ef4444, #059669, #064e3b);
+  }
+
+  .page-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--green-dark);
+    border-radius: var(--radius);
+    padding: 2rem 2rem 1.75rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '🌿';
+    position: absolute;
+    right: -10px;
+    bottom: -20px;
+    font-size: 120px;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .hero .eyebrow {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: #a7f3d0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 0.9rem;
+  }
+  .hero h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 0.6rem;
+  }
+  .hero p {
+    color: #a7f3d0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.1rem;
+    flex-wrap: wrap;
+  }
+  .hero-meta span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ── PROGRESS ── */
+  .prog-wrap {
+    margin-bottom: 0.5rem;
+  }
+  .prog-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .prog-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+  .prog-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #059669, #f59e0b);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── STEP TABS ── */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.2s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .tab:hover { border-color: var(--green-mid); color: var(--green-mid); }
+  .tab.active { background: var(--green-dark); border-color: var(--green-dark); color: #fff; }
+  .tab.done { background: var(--green-pale); border-color: #6ee7b7; color: var(--green-dark); }
+
+  /* ── SECTIONS ── */
+  .section { display: none; }
+  .section.visible { display: block; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card h3 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+  .card p, .card li {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+  .card ul { padding-left: 1.2rem; margin-top: 0.4rem; }
+  .card li { margin-bottom: 4px; }
+
+  /* ── SCENARIO BOX ── */
+  .scenario {
+    background: var(--green-pale);
+    border: 1.5px solid #6ee7b7;
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .scenario .s-icon {
+    font-size: 28px;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .scenario p {
+    font-size: 14px;
+    color: var(--green-dark);
+    line-height: 1.75;
+  }
+  .scenario strong { color: #065f46; }
+
+  /* ── TASK LABEL ── */
+  .task-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--green-mid);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .task-label::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: var(--green-mid);
+    border-radius: 2px;
+  }
+
+  /* ── FORM ELEMENTS ── */
+  textarea, select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--ink);
+    background: var(--surface);
+    resize: vertical;
+    line-height: 1.65;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+  textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--green-mid);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(5,150,105,0.1);
+  }
+  textarea::placeholder { color: #9ca3af; }
+
+  .field-wrap { margin-top: 0.75rem; }
+  .field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* ── CHOICE CHIPS ── */
+  .chip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 0.6rem;
+  }
+  .chip {
+    padding: 12px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Nunito', sans-serif;
+    color: var(--ink-soft);
+    text-align: center;
+    line-height: 1.4;
+    transition: all 0.18s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+  .chip:hover { border-color: var(--green-mid); background: var(--green-pale); }
+  .chip.selected {
+    border-color: var(--green-mid);
+    background: var(--green-light);
+    color: var(--green-dark);
+  }
+  .chip .chip-icon { font-size: 22px; }
+
+  /* ── INFO PILL ── */
+  .info-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--amber-light);
+    color: #92400e;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── NAV BUTTONS ── */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 10px;
+  }
+  .btn {
+    padding: 11px 22px;
+    border-radius: 30px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    color: var(--muted);
+    transition: all 0.18s;
+  }
+  .btn:hover { background: var(--surface); border-color: #9ca3af; }
+  .btn-primary {
+    background: var(--green-dark);
+    border-color: var(--green-dark);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(6,78,59,0.25);
+  }
+  .btn-primary:hover { background: #065f46; border-color: #065f46; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(6,78,59,0.3); }
+  .btn-print {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(245,158,11,0.3);
+  }
+  .btn-print:hover { background: #d97706; border-color: #d97706; }
+
+  /* ── SUMMARY ── */
+  .sum-block {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.875rem 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .sum-block .sum-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .sum-block .sum-val {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.65;
+    white-space: pre-wrap;
+  }
+
+  /* ── RUBRIC ── */
+  .rubric-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .rubric-item:last-child { border-bottom: none; }
+  .rubric-pts {
+    min-width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--green-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .rubric-pts .pts-num {
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--green-dark);
+    line-height: 1;
+  }
+  .rubric-pts .pts-lbl {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--green-mid);
+    letter-spacing: 0.5px;
+  }
+  .rubric-info h4 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .rubric-info p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── COUNTRY BADGE ── */
+  #country-display {
+    display: none;
+    margin-top: 0.5rem;
+  }
+  #country-display.show {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* ── STEP NUMBER BADGE ── */
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--green-dark);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    flex-shrink: 0;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1rem 0;
+  }
+
+  /* ── CONGRATS ── */
+  .congrats {
+    background: var(--green-dark);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .congrats .cg-icon { font-size: 40px; margin-bottom: 0.5rem; display: block; }
+  .congrats h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.4rem;
+  }
+  .congrats p { font-size: 13px; color: #a7f3d0; line-height: 1.65; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 21px; }
+    .chip-grid { grid-template-columns: repeat(2, 1fr); }
+    .nav-row { flex-direction: column; }
+    .btn { width: 100%; text-align: center; }
+  }
+
+  @media print {
+    body::before, .tabs, .prog-wrap, .prog-bar, .nav-row, .hero::after { display: none !important; }
+    .section { display: block !important; }
+    .card, .scenario, .sum-block { break-inside: avoid; }
+    .page-wrap { max-width: 100%; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow">Grade 7 · Araling Panlipunan · WebQuest</div>
+    <h1>Ikaw ang Tagapagligtas ng Kalikasan! 🌿</h1>
+    <p>Isang mabilis na misyon — basahin, mag-isip, at sumulat. Kaya mong tapusin ito sa loob ng isang klase. Handa ka na ba?</p>
+    <div class="hero-meta">
+      <span>⏱ ~30 minuto</span>
+      <span>📖 Individual na gawain</span>
+      <span>🎯 Gr. 7 AP — Modyul 2</span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="prog-wrap">
+    <div class="prog-labels">
+      <span id="prog-text">Simula</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" id="tab0" onclick="goTo(0)">🏠 Simula</div>
+    <div class="tab" id="tab1" onclick="goTo(1)">1 · Tukuyin</div>
+    <div class="tab" id="tab2" onclick="goTo(2)">2 · Suriin</div>
+    <div class="tab" id="tab3" onclick="goTo(3)">3 · Kumilos</div>
+    <div class="tab" id="tab4" onclick="goTo(4)">✅ Tapos na!</div>
+  </div>
+
+  <!-- ══════════════ SECTION 0 — INTRO ══════════════ -->
+  <div id="s0" class="section visible">
+    <div class="scenario">
+      <span class="s-icon">🕵️</span>
+      <p><strong>Ang Sitwasyon:</strong> Isipin mo na ikaw ay isang batang Environmental Detective. Nalaman mo na ang isang bansa sa Timog-Silangang Asya ay nanganganib ang likas na yaman. Ang iyong misyon — alamin kung bakit ito nangyayari, at hanapin ang solusyon. Ikaw lang ang makakatulong!</p>
+    </div>
+
+    <div class="card">
+      <h3>Paano ito gagawin?</h3>
+      <ul>
+        <li>May <strong>3 maikling gawain</strong> — bawat isa ay kailangan sagutan</li>
+        <li>Basahin ang maikling teksto, tapos sagutan ang mga tanong</li>
+        <li><strong>Huwag kopyahin</strong> — gamitin ang sarili mong mga salita at pag-iisip</li>
+        <li>Sa huli, makikita mo ang lahat ng iyong mga sagot at ang rubric</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Una sa lahat — pumili ng bansa! 🗺️</h3>
+      <p style="margin-bottom:12px;">Piliin ang bansang iyong iimbestigahan ngayon. Ito ang magiging sentro ng iyong buong WebQuest.</p>
+      <select id="country-select" onchange="saveCountry()">
+        <option value="">— Pumili ng bansa —</option>
+        <option>Pilipinas 🇵🇭</option>
+        <option>Myanmar 🇲🇲</option>
+        <option>Malaysia 🇲🇾</option>
+        <option>Indonesia 🇮🇩</option>
+        <option>Vietnam 🇻🇳</option>
+        <option>Thailand 🇹🇭</option>
+        <option>Cambodia 🇰🇭</option>
+        <option>Brunei 🇧🇳</option>
+      </select>
+      <div id="country-display"></div>
+    </div>
+
+    <div class="nav-row">
+      <span></span>
+      <button class="btn btn-primary" onclick="startMission()">Simulan ang Misyon →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ SECTION 1 — TUKUYIN ══════════════ -->
+  <div id="s1" class="section">
+    <div class="scenario">
+      <span class="s-icon">🔍</span>
+      <p><strong>Gawain 1 — Imbestigador Mode!</strong> Ang unang hakbang ng bawat detective ay alamin ang mga katotohanan. Pag-aralan ang impormasyon tungkol sa iyong napiling bansa at tukuyin ang mga likas na yaman nito.</p>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi A — Tukuyin ang mga Yaman</div>
+      <p class="field-label" style="margin-top:8px;">Alin sa mga ito ang makikita sa iyong napiling bansa? Maaaring pumili ng marami!</p>
+      <div class="chip-grid" id="chips-resources">
+        <div class="chip" onclick="toggleChip(this)"><span class="chip-icon">🪨</span>Yamang Mineral<br><small style="font-size:10px;font-weight:400;color:var(--muted);">(ginto, langis, nickel...)</small></div>
+        <div class="chip" onclick="toggleChip(this)"><span class="chip-icon">🌊</span>Yamang Tubig<br><small style="font-size:10px;font-weight:400;color:var(--muted);">(karagatan, ilog, hydropower)</small></div>
+        <div class="chip" onclick="toggleChip(this)"><span class="chip-icon">🌿</span>Yamang Gubat<br><small style="font-size:10px;font-weight:400;color:var(--muted);">(puno, hayop, gamot)</small></div>
+        <div class="chip" onclick="toggleChip(this)"><span class="chip-icon">🌾</span>Yamang Lupa<br><small style="font-size:10px;font-weight:400;color:var(--muted);">(sakahan, kapatagan)</small></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi B — Biotic o Abiotic?</div>
+      <p style="margin-bottom:12px;">Ito ay isang tanong na kailangang pag-isipan! Ang langis at natural gas — <em>biotic</em> o <em>abiotic</em> na likas na yaman? Ipaliwanag ang iyong sagot nang buo.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">💡 Hint: Ang <em>biotic</em> = galing sa buhay na bagay. Ang <em>abiotic</em> = galing sa hindi buhay na bagay.</p>
+      <textarea id="t1" rows="3" placeholder="Isulat dito ang iyong sagot. Huwag matakot mag-isip nang malalim!"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi C — Iyong Pananaw</div>
+      <p style="margin-bottom:10px;">Sa tingin mo, <strong>bakit mahalaga ang likas na yaman ng iyong napiling bansa</strong> para sa ibang bansa sa mundo? Mag-isip ng kahit isang konkretong halimbawa.</p>
+      <textarea id="t2" rows="4" placeholder="Hal: Ang langis ng Brunei ay ginagamit ng maraming bansa para sa enerhiya, kaya kung maubusan sila..."></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goTo(0)">← Bumalik</button>
+      <button class="btn btn-primary" onclick="nextStep(1)">Susunod na Gawain →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ SECTION 2 — SURIIN ══════════════ -->
+  <div id="s2" class="section">
+    <div class="scenario">
+      <span class="s-icon">⚠️</span>
+      <p><strong>Gawain 2 — Hanapin ang Problema!</strong> Kahit mayaman ang Timog-Silangang Asya, nahaharap ito sa mga malaking suliranin — deforestation, polusyon, at labis na paggamit ng mga yamang hindi na maibabalik. Bilang detective, kailangan mong alamin kung ano ang nangyayari.</p>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi A — Ano ang Pangunahing Suliranin?</div>
+      <p style="margin-bottom:10px;">Sa palagay mo, ano ang pinakamalaking banta sa likas na yaman ng iyong napiling bansa?</p>
+      <div class="chip-grid" id="chips-problem">
+        <div class="chip" onclick="pickOne(this,'chips-problem')"><span class="chip-icon">🪵</span>Deforestation<br><small style="font-size:10px;font-weight:400;color:var(--muted);">(illegal logging)</small></div>
+        <div class="chip" onclick="pickOne(this,'chips-problem')"><span class="chip-icon">🏭</span>Polusyon sa Hangin<br><small style="font-size:10px;font-weight:400;color:var(--muted);">(industriya)</small></div>
+        <div class="chip" onclick="pickOne(this,'chips-problem')"><span class="chip-icon">⛏️</span>Labis na Pagmimina<br><small style="font-size:10px;font-weight:400;color:var(--muted);">(overextraction)</small></div>
+        <div class="chip" onclick="pickOne(this,'chips-problem')"><span class="chip-icon">🌊</span>Polusyon sa Tubig<br><small style="font-size:10px;font-weight:400;color:var(--muted);">(basura sa karagatan)</small></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi B — Ano ang Mangyayari?</div>
+      <p style="margin-bottom:10px;">Kung patuloy ang suliranin na iyong pinili — <strong>ano ang mangyayari sa mga susunod na henerasyon?</strong> Mag-isip ng kahit dalawang konkretong epekto.</p>
+      <textarea id="t3" rows="4" placeholder="Hal: Una, mawawalan ng tirahan ang mga hayop na nakatira sa kagubatan. Pangalawa, mababawasan ang pagkain ng mga tao dahil..."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi C — Renewable o Hindi?</div>
+      <p style="margin-bottom:10px;">Ang yamang nasisira ng suliranin na iyong pinili — <em>renewable</em> ba ito o <em>non-renewable</em>? Bakit mahalaga ang pagkakaibang ito sa ating hinaharap?</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">💡 Renewable = maaaring palitan ng kalikasan. Non-renewable = tatagal ng milyun-milyong taon bago mapalitan.</p>
+      <textarea id="t4" rows="3" placeholder="Isulat dito ang iyong pag-iisip..."></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goTo(1)">← Bumalik</button>
+      <button class="btn btn-primary" onclick="nextStep(2)">Susunod na Gawain →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ SECTION 3 — KUMILOS ══════════════ -->
+  <div id="s3" class="section">
+    <div class="scenario">
+      <span class="s-icon">💡</span>
+      <p><strong>Gawain 3 — Oras na para Kumilos!</strong> Ngayon ang pinaka-exciting na bahagi. Nagamit mo na ang iyong kaalaman — oras na para mag-isip ng solusyon. Bilang isang batang environmental advocate, ikaw ang may kapangyarihang magbago!</p>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi A — Ang Iyong Solusyon</div>
+      <p style="margin-bottom:10px;">Mag-isip ng <strong>isang konkretong hakbang</strong> na maaaring gawin ng iyong napiling bansa para maprotektahan ang likas na yaman. Dapat ito ay makatotohanan at makakamit talaga!</p>
+      <textarea id="t5" rows="4" placeholder="Hal: Ang pamahalaan ng Pilipinas ay dapat magpatupad ng mas mahigpit na patakaran sa pagputol ng puno, at mag-plant ng 1 milyong bagong puno bawat taon sa tulong ng mga estudyante..."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi B — Simula sa Sarili</div>
+      <p style="margin-bottom:10px;">Kahit estudyante ka, kaya mong gumawa ng pagbabago! Isulat ang <strong>isang bagay na maaari mong gawin simula ngayon</strong> — sa iyong bahay, paaralan, o komunidad.</p>
+      <textarea id="t6" rows="3" placeholder="Hal: Magsisimula akong mag-segregate ng basura sa aming bahay at hihikayat ko ang aming mga kaklase na huwag magtapon ng basura sa ilog..."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="task-label">Bahagi C — Ang Iyong Slogan ✨</div>
+      <p style="margin-bottom:10px;">Panghuli — lumikha ng isang <strong>catchy na slogan</strong> na nagpapahayag ng iyong mensahe para sa kalikasan. Maging malikhaing at orihinal!</p>
+      <textarea id="t7" rows="2" placeholder="Hal: Ang kalikasan ay hindi pamana — ito ay hiniram natin sa ating mga anak!"></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goTo(2)">← Bumalik</button>
+      <button class="btn btn-primary" onclick="nextStep(3)">Tingnan ang Resulta →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ SECTION 4 — DONE ══════════════ -->
+  <div id="s4" class="section">
+    <div class="congrats">
+      <span class="cg-icon">🎉</span>
+      <h2>Tapos ka na — magaling!</h2>
+      <p>Natapos mo ang WebQuest! Narito ang lahat ng iyong mga sagot. Maaari mo itong i-print o i-screenshot para ipasa sa iyong guro.</p>
+    </div>
+
+    <div class="card" id="summary-card">
+      <h3>Buod ng Iyong mga Sagot</h3>
+      <div id="summary-area"></div>
+    </div>
+
+    <div class="card">
+      <h3>Rubric — Paano ka Susuriin? 📊</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Kabuuang puntos: <strong>30</strong></p>
+      <div class="rubric-item">
+        <div class="rubric-pts"><span class="pts-num">10</span><span class="pts-lbl">pts</span></div>
+        <div class="rubric-info">
+          <h4>Katumpakan ng Impormasyon</h4>
+          <p>Tama at kumpleto ang impormasyon tungkol sa likas na yaman ng napiling bansa — hindi hula-hula lang!</p>
+        </div>
+      </div>
+      <div class="rubric-item">
+        <div class="rubric-pts"><span class="pts-num">10</span><span class="pts-lbl">pts</span></div>
+        <div class="rubric-info">
+          <h4>Kritikal na Pag-iisip</h4>
+          <p>Nagpapakita ng sariling pagsusuri ng suliranin, epekto, at solusyon — hindi kopya mula sa modyul.</p>
+        </div>
+      </div>
+      <div class="rubric-item">
+        <div class="rubric-pts"><span class="pts-num">7</span><span class="pts-lbl">pts</span></div>
+        <div class="rubric-info">
+          <h4>Aplikasyon sa Tunay na Buhay</h4>
+          <p>Ang solusyon at personal na hakbang ay makatotohanan at nagpapakita ng tunay na pag-unawa sa likas-kayang pag-unlad.</p>
+        </div>
+      </div>
+      <div class="rubric-item">
+        <div class="rubric-pts"><span class="pts-num">3</span><span class="pts-lbl">pts</span></div>
+        <div class="rubric-info">
+          <h4>Pagkamalikhain ng Slogan</h4>
+          <p>Orihinal, makabuluhan, at nagpapahayag ng mensahe nang malinaw at may dating.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goTo(3)">← Bumalik</button>
+      <button class="btn btn-print" onclick="window.print()">🖨️ I-print ang mga Sagot</button>
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script>
+  var cur = 0;
+  var country = '';
+
+  var progLabels = ['Simula', 'Gawain 1 — Tukuyin', 'Gawain 2 — Suriin', 'Gawain 3 — Kumilos', 'Tapos na!'];
+  var progPcts   = [0, 25, 50, 75, 100];
+
+  function saveCountry() {
+    country = document.getElementById('country-select').value;
+    var disp = document.getElementById('country-display');
+    if (country) {
+      disp.textContent = '✔ ' + country;
+      disp.className = 'show';
+    } else {
+      disp.className = '';
+    }
+  }
+
+  function goTo(n) {
+    document.getElementById('s' + cur).classList.remove('visible');
+    document.getElementById('tab' + cur).classList.remove('active');
+    cur = n;
+    document.getElementById('s' + cur).classList.add('visible');
+    document.getElementById('tab' + cur).classList.add('active');
+    document.getElementById('prog-fill').style.width = progPcts[cur] + '%';
+    document.getElementById('prog-text').textContent = progLabels[cur];
+    document.getElementById('prog-pct').textContent = progPcts[cur] + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function nextStep(from) {
+    document.getElementById('tab' + from).classList.add('done');
+    if (from === 3) buildSummary();
+    goTo(from + 1);
+  }
+
+  function startMission() {
+    if (!document.getElementById('country-select').value) {
+      alert('Huwag kalimutang pumili ng bansa bago magsimula! 🌏');
+      return;
+    }
+    nextStep(0);
+  }
+
+  function toggleChip(el) {
+    el.classList.toggle('selected');
+  }
+
+  function pickOne(el, groupId) {
+    document.querySelectorAll('#' + groupId + ' .chip').forEach(function(c) {
+      c.classList.remove('selected');
+    });
+    el.classList.add('selected');
+  }
+
+  function getSelectedChips(groupId) {
+    var sel = [];
+    document.querySelectorAll('#' + groupId + ' .chip.selected').forEach(function(c) {
+      sel.push(c.innerText.replace(/\n.*/,'').trim());
+    });
+    return sel.length ? sel.join(', ') : '(walang pinili)';
+  }
+
+  function buildSummary() {
+    var fields = [
+      ['Napiling Bansa', document.getElementById('country-select').value || '(hindi pinili)'],
+      ['Mga Likas na Yaman (G1-A)', getSelectedChips('chips-resources')],
+      ['Biotic o Abiotic — Langis/Gas (G1-B)', document.getElementById('t1').value || '(walang sagot)'],
+      ['Kahalagahan sa Ibang Bansa (G1-C)', document.getElementById('t2').value || '(walang sagot)'],
+      ['Pangunahing Suliranin (G2-A)', getSelectedChips('chips-problem')],
+      ['Epekto sa Susunod na Henerasyon (G2-B)', document.getElementById('t3').value || '(walang sagot)'],
+      ['Renewable o Non-Renewable (G2-C)', document.getElementById('t4').value || '(walang sagot)'],
+      ['Solusyon ng Bansa (G3-A)', document.getElementById('t5').value || '(walang sagot)'],
+      ['Personal na Hakbang (G3-B)', document.getElementById('t6').value || '(walang sagot)'],
+      ['Slogan (G3-C)', document.getElementById('t7').value || '(walang sagot)'],
+    ];
+    var html = '';
+    fields.forEach(function(f) {
+      html += '<div class="sum-block"><div class="sum-label">' + f[0] + '</div><div class="sum-val">' + escHtml(f[1]) + '</div></div>';
+    });
+    document.getElementById('summary-area').innerHTML = html;
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+</body>
+</html>
